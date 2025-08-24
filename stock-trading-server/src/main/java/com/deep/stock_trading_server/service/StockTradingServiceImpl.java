@@ -1,8 +1,6 @@
 package com.deep.stock_trading_server.service;
 
-import com.deep.StockRequest;
-import com.deep.StockResponse;
-import com.deep.StockTradingServiceGrpc;
+import com.deep.*;
 import com.deep.stock_trading_server.entity.Stock;
 import com.deep.stock_trading_server.repo.StockRepo;
 import io.grpc.Status;
@@ -55,5 +53,41 @@ public class StockTradingServiceImpl extends StockTradingServiceGrpc.StockTradin
         } catch (Exception e) {
             responseObserver.onError(e);
         }
+    }
+
+    @Override
+    public StreamObserver<StockOrder> bulkStockOrder(StreamObserver<OrderSummary> responseObserver) {
+        return new StreamObserver<StockOrder>() {
+
+            private int totalOrders = 0;
+            private double totalAmount = 0;
+            private int successCount = 0;
+
+            @Override
+            public void onNext(StockOrder stockOrder) {
+                totalOrders++;
+                totalAmount += stockOrder.getQuantity() * stockOrder.getPrice();
+                successCount++;
+                System.out.println("received order.." + stockOrder);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                System.out.println("error in stock order..");
+            }
+
+            @Override
+            public void onCompleted() {
+                OrderSummary summary = OrderSummary.newBuilder()
+                                .setSuccessCount(successCount)
+                                        .setTotalAmount(totalAmount)
+                                                .setTotalOrder(totalOrders+"")
+                                                        .build();
+
+                responseObserver.onNext(summary);
+                responseObserver.onCompleted();
+                System.out.println("Summary created..");
+            }
+        };
     }
 }

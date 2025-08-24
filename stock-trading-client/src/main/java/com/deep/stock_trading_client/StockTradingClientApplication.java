@@ -24,7 +24,8 @@ public class StockTradingClientApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		String stock = "AMZN";
 		try{
-			stockClientService.subScribeStockPrice(stock);
+//			stockClientService.subScribeStockPrice(stock);
+			stockClientService.placeBulkOrders();
 		} catch (Exception e) {
 			throw new RuntimeException("Not found with stock name " + stock);
 		}
