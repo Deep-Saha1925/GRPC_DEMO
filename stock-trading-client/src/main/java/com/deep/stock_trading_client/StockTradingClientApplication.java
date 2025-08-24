@@ -22,9 +22,9 @@ public class StockTradingClientApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		String stock = "AAPL";
+		String stock = "AMZN";
 		try{
-			System.out.println(stockClientService.getStockPrice(stock));
+			stockClientService.subScribeStockPrice(stock);
 		} catch (Exception e) {
 			throw new RuntimeException("Not found with stock name " + stock);
 		}
