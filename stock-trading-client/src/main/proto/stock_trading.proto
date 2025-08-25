@@ -14,6 +14,16 @@ service StockTradingService{
   //client streaming
   rpc bulkStockOrder(stream StockOrder) returns (OrderSummary);
 
+  //bidirectional streaming
+  rpc liveTrading(stream StockOrder) returns (stream TradeStatus);
+
+}
+
+message TradeStatus{
+  string order_id=1;
+  string status=2;  //execute, fail, pending
+  string message = 3; //result if failed or success
+  string timestamp=4;
 }
 
 message OrderSummary{
